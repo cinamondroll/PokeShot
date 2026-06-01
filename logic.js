@@ -353,7 +353,7 @@ var bg = new Image();
 bg.src = "background.jpg";
 
 var logo = new Image();
-logo.src = "logo.png";
+logo.src = "Logo.png";
 
 // ======================
 // GAME LOOP
