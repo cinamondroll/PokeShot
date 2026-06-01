@@ -803,6 +803,13 @@ function drawMobileShootButton() {
 function startTransition(sceneName) {
     if (isTransitioning) return;
 
+    if (
+        currentScene == "menu" &&
+        sceneName == "gameplay"
+    ) {
+        resetGameState();
+    }
+
     nextScene = sceneName;
 
     isTransitioning = true;
