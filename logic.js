@@ -282,7 +282,7 @@ function rectsOverlap(a, b) {
     var bcx = b.x + b.width / 2;
     var bcy = b.y + b.height / 2;
     return Math.abs(acx - bcx) < (a.width / 2 + b.width / 2) &&
-           Math.abs(acy - bcy) < (a.height / 2 + b.height / 2);
+        Math.abs(acy - bcy) < (a.height / 2 + b.height / 2);
 }
 
 // ======================
@@ -353,7 +353,7 @@ var bg = new Image();
 bg.src = "background.jpg";
 
 var logo = new Image();
-logo.src = "Logo.png";
+logo.src = "logo.png";
 
 // ======================
 // GAME LOOP
@@ -725,17 +725,6 @@ function drawAim() {
     var radius = 20;
     var crossLen = 30;
 
-    // Mobile: dashed grab-area ring (shows draggable zone)
-    if (isMobile && !shotState.holding) {
-        ctx.lineWidth = 1;
-        ctx.setLineDash([5, 5]);
-        ctx.strokeStyle = "rgba(255,100,100,0.45)";
-        ctx.beginPath();
-        ctx.arc(aim.x, aim.y, 60, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.setLineDash([]);
-    }
-
     // Pulsing ring while holding
     if (shotState.holding) {
         var pulse = (shotState.holdDuration % 30) / 30;
@@ -934,6 +923,8 @@ canvas.addEventListener("mouseup", function () {
 // Track which touch controls aim drag vs. shoot button
 var aimTouchId = -1;
 var shootTouchId = -1;
+var aimLastX = 0;
+var aimLastY = 0;
 
 canvas.addEventListener(
     "touchstart",
@@ -962,12 +953,11 @@ canvas.addEventListener(
                     continue;
                 }
 
-                // Aim drag — must start within grab radius of the crosshair
-                var dax = tx - aim.x;
-                var day = ty - aim.y;
-                if (aimTouchId === -1 &&
-                    Math.sqrt(dax * dax + day * day) <= 60) {
+                // Aim drag — any touch outside shoot button controls the aim
+                if (aimTouchId === -1) {
                     aimTouchId = touch.identifier;
+                    aimLastX = touch.clientX;
+                    aimLastY = touch.clientY;
                 }
                 continue;
             }
@@ -1019,9 +1009,11 @@ canvas.addEventListener(
             var touch = event.changedTouches[i];
             if (touch.identifier !== aimTouchId) continue;
 
-            // Aim follows finger position absolutely
-            aim.x = (touch.clientX - rect.left) * scaleX;
-            aim.y = (touch.clientY - rect.top) * scaleY;
+            // Aim moves by drag delta (relative)
+            aim.x += (touch.clientX - aimLastX) * scaleX;
+            aim.y += (touch.clientY - aimLastY) * scaleY;
+            aimLastX = touch.clientX;
+            aimLastY = touch.clientY;
 
             aim.x = Math.max(0, Math.min(canvas.width, aim.x));
             aim.y = Math.max(0, Math.min(canvas.height, aim.y));
