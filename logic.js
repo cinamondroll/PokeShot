@@ -33,6 +33,8 @@ var gameState = {
     hiScore: 0
 };
 
+var showTutorial = false;
+
 function resetGameState() {
     gameState.score = 0;
     gameState.lives = 3;
@@ -282,7 +284,7 @@ function rectsOverlap(a, b) {
     var bcx = b.x + b.width / 2;
     var bcy = b.y + b.height / 2;
     return Math.abs(acx - bcx) < (a.width / 2 + b.width / 2) &&
-        Math.abs(acy - bcy) < (a.height / 2 + b.height / 2);
+           Math.abs(acy - bcy) < (a.height / 2 + b.height / 2);
 }
 
 // ======================
@@ -333,7 +335,7 @@ var menuButton = {
 
 // Mobile-only shoot button (circular, bottom-right)
 var shootMobileButton = {
-    cx: 860,
+    cx: 100,
     cy: 450,
     r: 55
 };
@@ -391,7 +393,7 @@ function gameLoop() {
 // ======================
 
 function updateGameplay() {
-    if (isTransitioning) return;
+    if (isTransitioning || showTutorial) return;
     updateShotMechanics();
     updateEnemies();
     updateWave();
@@ -585,6 +587,13 @@ function drawMenu() {
 // ======================
 
 function drawGameplay() {
+    // Tutorial overlay — show before game starts
+    if (showTutorial) {
+        ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+        drawTutorial();
+        return;
+    }
+
     // Grayscale progress (0 = normal, 1 = full B&W) tied to zoom level
     var zoomProgress =
         (shotState.zoomScale - 1) / (shotState.zoomTargetScale - 1);
@@ -608,6 +617,94 @@ function drawGameplay() {
     if (isMobile) drawMobileShootButton();
     drawHUD();
     drawShotFlash();
+}
+
+// ======================
+// TUTORIAL
+// ======================
+
+function drawTutorial() {
+    // Dark overlay
+    ctx.fillStyle = "rgba(0,0,0,0.72)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    var panelW = 600;
+    var panelH = 290;
+    var panelX = (canvas.width - panelW) / 2;
+    var panelY = (canvas.height - panelH) / 2;
+
+    // Panel background
+    ctx.fillStyle = "rgba(15,15,25,0.96)";
+    ctx.beginPath();
+    ctx.roundRect(panelX, panelY, panelW, panelH, 14);
+    ctx.fill();
+
+    // Panel border
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = "rgba(255,255,255,0.25)";
+    ctx.beginPath();
+    ctx.roundRect(panelX, panelY, panelW, panelH, 14);
+    ctx.stroke();
+
+    // Title
+    ctx.textAlign = "center";
+    ctx.font = "bold 26px Poppins";
+    ctx.fillStyle = "white";
+    ctx.fillText("CARA BERMAIN", canvas.width / 2, panelY + 44);
+
+    // Divider
+    ctx.strokeStyle = "rgba(255,255,255,0.18)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(panelX + 30, panelY + 60);
+    ctx.lineTo(panelX + panelW - 30, panelY + 60);
+    ctx.stroke();
+
+    // Web section
+    ctx.textAlign = "left";
+    ctx.font = "bold 16px Poppins";
+    ctx.fillStyle = "rgba(150,200,255,1)";
+    ctx.fillText("Web", panelX + 36, panelY + 92);
+
+    ctx.font = "15px Poppins";
+    ctx.fillStyle = "rgba(210,210,210,0.92)";
+    ctx.fillText(
+        "Klik dan tahan pada enemy, lepaskan untuk menembak",
+        panelX + 36, panelY + 114
+    );
+
+    // Mobile section
+    ctx.font = "bold 16px Poppins";
+    ctx.fillStyle = "rgba(150,255,180,1)";
+    ctx.fillText("Mobile", panelX + 36, panelY + 152);
+
+    ctx.font = "15px Poppins";
+    ctx.fillStyle = "rgba(210,210,210,0.92)";
+    ctx.fillText(
+        "Drag aim ke enemy, tekan tombol SHOOT dan lepaskan untuk menembak",
+        panelX + 36, panelY + 174
+    );
+    ctx.fillText(
+        "(main dengan 2 jari)",
+        panelX + 36, panelY + 196
+    );
+
+    // Divider bawah
+    ctx.strokeStyle = "rgba(255,255,255,0.12)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(panelX + 30, panelY + 216);
+    ctx.lineTo(panelX + panelW - 30, panelY + 216);
+    ctx.stroke();
+
+    // Dismiss hint
+    ctx.textAlign = "center";
+    ctx.font = "14px Poppins";
+    ctx.fillStyle = "rgba(255,240,120,0.85)";
+    ctx.fillText(
+        "Klik / Tap di mana saja untuk mulai",
+        canvas.width / 2, panelY + panelH - 18
+    );
 }
 
 // ======================
@@ -803,12 +900,7 @@ function drawMobileShootButton() {
 function startTransition(sceneName) {
     if (isTransitioning) return;
 
-    if (
-        currentScene == "menu" &&
-        sceneName == "gameplay"
-    ) {
-        resetGameState();
-    }
+    if (sceneName == "gameplay") showTutorial = true;
 
     nextScene = sceneName;
 
@@ -904,6 +996,7 @@ canvas.addEventListener("mousedown", function () {
         startTransition("gameplay");
     }
     if (currentScene == "gameplay") {
+        if (showTutorial) { showTutorial = false; return; }
         startHold();
     }
 });
@@ -949,6 +1042,9 @@ canvas.addEventListener(
 
             if (currentScene == "gameplay") {
                 event.preventDefault();
+
+                // Dismiss tutorial on any tap
+                if (showTutorial) { showTutorial = false; continue; }
 
                 // Shoot button takes priority
                 var dx = tx - shootMobileButton.cx;
