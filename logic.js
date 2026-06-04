@@ -1011,6 +1011,7 @@ canvas.addEventListener("mouseup", function () {
             startTransition("gameplay");
         }
         if (menuButton.hover) {
+            resetGameState();
             startTransition("menu");
         }
     }
@@ -1090,6 +1091,7 @@ canvas.addEventListener(
                     ty > menuButton.y &&
                     ty < menuButton.y + menuButton.height
                 ) {
+                    resetGameState();
                     startTransition("menu");
                 }
             }
