@@ -1,0 +1,33 @@
+// === IMAGE ===
+var bg   = new Image();
+var logo = new Image();
+bg.src   = "background.jpg";
+logo.src = "logo.png";
+
+// === GAME LOOP ===
+function gameLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (currentScene == "menu") {
+        drawMenu();
+    } else if (currentScene == "gameplay") {
+        updateGameplay();
+        drawGameplay();
+    } else if (currentScene == "gameOver") {
+        drawGameOver();
+    }
+
+    drawTransition();
+    requestAnimationFrame(gameLoop);
+}
+
+// === BOOT — wait for images and fonts before first frame ===
+bg.onload = function () {
+    logo.onload = function () {
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(gameLoop);
+        } else {
+            gameLoop();
+        }
+    };
+};
