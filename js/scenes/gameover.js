@@ -13,12 +13,12 @@ function drawGameOver() {
     ctx.shadowBlur  = 0;
 
     // Score info
-    ctx.font        = "600 28px 'Cinzel'";
-    ctx.shadowBlur  = 10;
-    ctx.shadowColor = "rgba(160,80,255,0.6)";
-    ctx.fillStyle   = "rgba(200,170,255,0.95)";
+    ctx.font        = "700 30px 'Cinzel'";
+    ctx.shadowBlur  = 22;
+    ctx.shadowColor = "rgba(200,140,255,0.95)";
+    ctx.fillStyle   = "rgba(248,235,255,1)";
     ctx.fillText("SCORE : " + gameState.score,   canvas.width / 2, 218);
-    ctx.fillText("BEST  : " + gameState.hiScore, canvas.width / 2, 262);
+    ctx.fillText("BEST  : " + gameState.hiScore, canvas.width / 2, 264);
     ctx.shadowBlur  = 0;
 
     drawSceneButton(restartButton, "RESTART");

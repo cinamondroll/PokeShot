@@ -36,11 +36,13 @@ canvas.addEventListener("mousemove", function (event) {
 
 // === INPUT — MOUSE DOWN / UP ===
 canvas.addEventListener("mousedown", function () {
+    startAudio();
     if (currentScene == "menu" && button.hover) {
         startTransition("gameplay");
     }
     if (currentScene == "gameplay") {
-        if (showTutorial) { showTutorial = false; return; }
+        if (showHexagonWarning) { showHexagonWarning = false; return; }
+        if (showTutorial)       { showTutorial       = false; return; }
         startHold();
     }
 });
@@ -69,6 +71,7 @@ var aimLastY     = 0;
 
 canvas.addEventListener("touchstart", function (event) {
     if (!isMobile) return;
+    startAudio();
 
     var rect   = canvas.getBoundingClientRect();
     var scaleX = canvas.width  / rect.width;
@@ -82,7 +85,8 @@ canvas.addEventListener("touchstart", function (event) {
         if (currentScene == "gameplay") {
             event.preventDefault();
 
-            if (showTutorial) { showTutorial = false; continue; }
+            if (showHexagonWarning) { showHexagonWarning = false; continue; }
+            if (showTutorial)       { showTutorial       = false; continue; }
 
             var dx = tx - shootMobileButton.cx;
             var dy = ty - shootMobileButton.cy;

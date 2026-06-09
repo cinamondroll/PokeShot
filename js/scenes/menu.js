@@ -14,26 +14,24 @@ function drawMenu() {
     ctx.shadowBlur  = 0;
 
     // ======================
-    // LOGO ANIMATION
+    // LOGO (canvas-drawn)
     // ======================
-    logoScale += logoScaleSpeed;
-    if (logoScale >= 1.03 || logoScale <= 0.97) logoScaleSpeed *= -1;
-
-    var logoWidth  = 200 * logoScale;
-    var logoHeight = 200 * logoScale;
-    var logoX      = 480 - logoWidth  / 2;
-    var logoY      = 210 - logoHeight / 2;
-
-    ctx.drawImage(logo, logoX, logoY, logoWidth, logoHeight);
+    drawLogo(canvas.width / 2, 215);
 
     // ======================
     // SUBTITLE
     // ======================
-    ctx.font        = "400 27px 'Cinzel'";
-    ctx.shadowBlur  = 14;
-    ctx.shadowColor = "rgba(140,60,220,0.65)";
-    ctx.fillStyle   = "rgba(180,145,240,0.9)";
-    ctx.fillText("Example Game", canvas.width / 2, 356);
+    ctx.textAlign   = "center";
+    ctx.font        = "700 38px 'Cinzel'";
+    ctx.shadowBlur  = 35;
+    ctx.shadowColor = "rgba(210,100,255,1)";
+    ctx.fillStyle   = "rgba(245,220,255,1)";
+    ctx.fillText("Rune Hunter", canvas.width / 2, 358);
+    // Second pass for stronger core
+    ctx.shadowBlur  = 12;
+    ctx.shadowColor = "rgba(255,255,255,0.7)";
+    ctx.fillStyle   = "rgba(255,245,255,1)";
+    ctx.fillText("Rune Hunter", canvas.width / 2, 358);
     ctx.shadowBlur  = 0;
 
     // ======================

@@ -14,7 +14,8 @@ var gameState = {
     hiScore: 0
 };
 
-var showTutorial = false;
+var showTutorial       = false;
+var showHexagonWarning = false;
 
 function resetGameState() {
     gameState.score = 0;
@@ -31,8 +32,10 @@ function resetGameState() {
     shotState.timeScale   = 1;
     shotState.missFlash   = 0;
     shotState.hitFlash    = 0;
-    aimTouchId   = -1;
-    shootTouchId = -1;
+    aimTouchId            = -1;
+    shootTouchId          = -1;
+    showHexagonWarning    = false;
+    explosionParticles    = [];
 }
 
 function loseLife() {

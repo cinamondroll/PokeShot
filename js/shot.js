@@ -17,8 +17,9 @@ function startHold() {
 
 function releaseShot() {
     if (!shotState.holding) return;
-    shotState.holding     = false;
+    shotState.holding      = false;
     shotState.holdDuration = 0;
+    playShoot();
     fireShot();
 }
 
@@ -33,9 +34,18 @@ function fireShot() {
 
     for (var i = 0; i < enemies.length; i++) {
         if (enemies[i].alive && rectsOverlap(aimRect, enemies[i])) {
-            enemies[i].alive  = false;
-            gameState.score  += enemies[i].points;
-            shotState.hitFlash = 12;
+            var ecx = enemies[i].x + enemies[i].width  / 2;
+            var ecy = enemies[i].y + enemies[i].height / 2;
+            enemies[i].alive = false;
+            spawnExplosion(ecx, ecy, enemies[i].type);
+            if (enemies[i].type === "pentagon") {
+                gameState.score   += enemies[i].points;
+                shotState.hitFlash = 12;
+            } else {
+                // Hexagon decoy — penalty!
+                shotState.missFlash = 20;
+                loseLife();
+            }
             return;
         }
     }

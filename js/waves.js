@@ -25,4 +25,9 @@ function startNextWave() {
     waveState.spawnInterval  = Math.max(50, 120 - gameState.wave * 5);
     waveState.spawnTimer     = 90;
     waveState.enemiesSpawned = 0;
+
+    // Show hexagon warning once when wave 4 begins
+    if (gameState.wave === 4) {
+        showHexagonWarning = true;
+    }
 }

@@ -1,8 +1,6 @@
 // === IMAGE ===
-var bg   = new Image();
-var logo = new Image();
-bg.src   = "background.jpg";
-logo.src = "logo.png";
+var bg = new Image();
+bg.src = "background.jpg";
 
 // === GAME LOOP ===
 function gameLoop() {
@@ -21,13 +19,11 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// === BOOT — wait for images and fonts before first frame ===
+// === BOOT — wait for background image and fonts ===
 bg.onload = function () {
-    logo.onload = function () {
-        if (document.fonts && document.fonts.ready) {
-            document.fonts.ready.then(gameLoop);
-        } else {
-            gameLoop();
-        }
-    };
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(gameLoop);
+    } else {
+        gameLoop();
+    }
 };
